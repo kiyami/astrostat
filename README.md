@@ -1,6 +1,8 @@
-# astrostat
+# AstroStat
 
-## X-ray Astrophysics
+## Astrophysics
+
+### X-ray Observations
 
 ### Data Analysis
 
