@@ -160,81 +160,139 @@ class Observation:
         else:
             print("*cheese* files already exist!")
 
-    def mos1_spectra(self, region_file='reg.txt', mask=0):
+    def mos1_spectra(self, region_file='reg.txt', mask=0, with_image=False):
+
+        if with_image:
+            elow = 400
+            ehigh = 7200
+        else:
+            elow = 0
+            ehigh = 0
+
         args = ['mos-spectra',
                 'prefix={}'.format(self.mos1_prefix),
                 'caldb={}'.format(self.envvars['esas_caldb']),
                 'region={}/{}'.format("regions", region_file),
                 'mask={}'.format(mask),
-                'elow=400', 'ehigh=7200',
-                'ccd1={} ccd2={} ccd3={} ccd4={} ccd5={} ccd6={} ccd7={}'.format(*self.mos1_ccds)]
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'ccd1={}'.format(self.mos1_ccds[0]),
+                'ccd2={}'.format(self.mos1_ccds[1]),
+                'ccd3={}'.format(self.mos1_ccds[2]),
+                'ccd4={}'.format(self.mos1_ccds[3]),
+                'ccd5={}'.format(self.mos1_ccds[4]),
+                'ccd6={}'.format(self.mos1_ccds[5]),
+                'ccd7={}'.format(self.mos1_ccds[6])]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
         args = ['mos_back',
                 'prefix={}'.format(self.mos1_prefix),
                 'caldb={}'.format(self.envvars['esas_caldb']),
                 'diag=0',
-                'elow=400', 'ehigh=7200',
-                'ccd1={} ccd2={} ccd3={} ccd4={} ccd5={} ccd6={} ccd7={}'.format(*self.mos1_ccds)]
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'ccd1={}'.format(self.mos1_ccds[0]),
+                'ccd2={}'.format(self.mos1_ccds[1]),
+                'ccd3={}'.format(self.mos1_ccds[2]),
+                'ccd4={}'.format(self.mos1_ccds[3]),
+                'ccd5={}'.format(self.mos1_ccds[4]),
+                'ccd6={}'.format(self.mos1_ccds[5]),
+                'ccd7={}'.format(self.mos1_ccds[6])]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+        print(" ".join(args))
 
-        args = ['rot-im-det-sky',
-                'prefix={}'.format(self.mos1_prefix),
-                'mask={}'.format(mask),
-                'elow=400', 'ehigh=7200',
-                'mode=1']
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+        if with_image:
+            args = ['rot-im-det-sky',
+                    'prefix={}'.format(self.mos1_prefix),
+                    'mask={}'.format(mask),
+                    'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                    'mode=1']
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
-    def mos2_spectra(self, region_file='reg.txt', mask=0):
+    def mos2_spectra(self, region_file='reg.txt', mask=0, with_image=False):
+
+        if with_image:
+            elow = 400
+            ehigh = 7200
+        else:
+            elow = 0
+            ehigh = 0
+
         args = ['mos-spectra',
                 'prefix={}'.format(self.mos2_prefix),
                 'caldb={}'.format(self.envvars['esas_caldb']),
                 'region={}/{}'.format("regions", region_file),
                 'mask={}'.format(mask),
-                'elow=400', 'ehigh=7200',
-                'ccd1={} ccd2={} ccd3={} ccd4={} ccd5={} ccd6={} ccd7={}'.format(*self.mos2_ccds)]
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'ccd1={}'.format(self.mos2_ccds[0]),
+                'ccd2={}'.format(self.mos2_ccds[1]),
+                'ccd3={}'.format(self.mos2_ccds[2]),
+                'ccd4={}'.format(self.mos2_ccds[3]),
+                'ccd5={}'.format(self.mos2_ccds[4]),
+                'ccd6={}'.format(self.mos2_ccds[5]),
+                'ccd7={}'.format(self.mos2_ccds[6])]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
         args = ['mos_back',
                 'prefix={}'.format(self.mos2_prefix),
                 'caldb={}'.format(self.envvars['esas_caldb']),
                 'diag=0',
-                'elow=400', 'ehigh=7200',
-                'ccd1={} ccd2={} ccd3={} ccd4={} ccd5={} ccd6={} ccd7={}'.format(*self.mos2_ccds)]
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'ccd1={}'.format(self.mos2_ccds[0]),
+                'ccd2={}'.format(self.mos2_ccds[1]),
+                'ccd3={}'.format(self.mos2_ccds[2]),
+                'ccd4={}'.format(self.mos2_ccds[3]),
+                'ccd5={}'.format(self.mos2_ccds[4]),
+                'ccd6={}'.format(self.mos2_ccds[5]),
+                'ccd7={}'.format(self.mos2_ccds[6])]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
-        args = ['rot-im-det-sky',
-                'prefix={}'.format(self.mos2_prefix),
-                'mask={}'.format(mask),
-                'elow=400', 'ehigh=7200',
-                'mode=1']
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+        if with_image:
+            args = ['rot-im-det-sky',
+                    'prefix={}'.format(self.mos2_prefix),
+                    'mask={}'.format(mask),
+                    'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                    'mode=1']
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
-    def pn_spectra(self, region_file='pn-reg.txt', mask=0):
+    def pn_spectra(self, region_file='pn-reg.txt', mask=0, with_image=False):
+
+        if with_image:
+            elow = 400
+            ehigh = 7200
+        else:
+            elow = 0
+            ehigh = 0
+
         args = ['pn-spectra',
                 'prefix={}'.format(self.pn_prefix),
                 'caldb={}'.format(self.envvars['esas_caldb']),
                 'region={}/{}'.format("regions", region_file),
                 'mask={}'.format(mask),
-                'elow=400', 'ehigh=7200',
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
                 'pattern=4',
-                'quad1={} quad2={} quad3={} quad4={}'.format(*self.pn_ccds)]
+                'quad1={}'.format(self.pn_ccds[0]),
+                'quad2={}'.format(self.pn_ccds[1]),
+                'quad3={}'.format(self.pn_ccds[2]),
+                'quad4={}'.format(self.pn_ccds[3])]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
         args = ['pn_back',
                 'prefix={}'.format(self.pn_prefix),
                 'caldb={}'.format(self.envvars['esas_caldb']),
                 'diag=0',
-                'elow=400', 'ehigh=7200',
-                'quad1={} quad2={} quad3={} quad4={}'.format(*self.pn_ccds)]
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'quad1={}'.format(self.pn_ccds[0]),
+                'quad2={}'.format(self.pn_ccds[1]),
+                'quad3={}'.format(self.pn_ccds[2]),
+                'quad4={}'.format(self.pn_ccds[3])]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
-        args = ['rot-im-det-sky',
-                'prefix={}'.format(self.pn_prefix),
-                'mask={}'.format(mask),
-                'elow=400', 'ehigh=7200',
-                'mode=1']
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+        if with_image:
+            args = ['rot-im-det-sky',
+                    'prefix={}'.format(self.pn_prefix),
+                    'mask={}'.format(mask),
+                    'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                    'mode=1']
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
     def comb_image(self, mask=0, mos1=True, mos2=True, pn=True):
         prefixlist = ""
@@ -274,14 +332,14 @@ class Observation:
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
     def set_detx_dety(self):
-        self.mos1_detx = 134
-        self.mos1_dety = -219
+        self.mos1_detx = 206.5
+        self.mos1_dety = -79.4
 
-        self.mos2_detx = 6
-        self.mos2_dety = -93
+        self.mos2_detx = 61.8
+        self.mos2_dety = -81.6
 
-        self.pn_detx = 59
-        self.pn_dety = -10
+        self.pn_detx = 228.6
+        self.pn_dety = -40.6
 
     def create_region_file(self, inner_radius, outer_radius):
         inner_radius_phy = float(inner_radius) * 20.0
@@ -314,66 +372,92 @@ class Observation:
         with open(os.path.join(self.folder_list["regions"], pn_file_name), "w") as f:
             f.write(pn_text)
 
-    def rename_spectra_output(self, inner_radius, outer_radius):
+    def rename_spectra_output(self, inner_radius, outer_radius, mos1=True, mos2=True, pn=True):
         name = "{}-{}".format(inner_radius, outer_radius)
 
-        args = ['mv', 'mos{}-obj.pi'.format(self.mos1_prefix), 'mos{}-obj-{}.pi'.format(self.mos1_prefix, name)]
+        if mos1:
+            args = ['mv', 'mos{}-obj.pi'.format(self.mos1_prefix), 'mos{}-obj-{}.pi'.format(self.mos1_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'mos{}-back.pi'.format(self.mos1_prefix), 'mos{}-back-{}.pi'.format(self.mos1_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'mos{}.rmf'.format(self.mos1_prefix), 'mos{}-{}.rmf'.format(self.mos1_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'mos{}.arf'.format(self.mos1_prefix), 'mos{}-{}.arf'.format(self.mos1_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'mos{}-obj-im-sp-det.fits'.format(self.mos1_prefix),
+                    'mos{}-sp-{}.fits'.format(self.mos1_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+
+        if mos2:
+            args = ['mv', 'mos{}-obj.pi'.format(self.mos2_prefix), 'mos{}-obj-{}.pi'.format(self.mos2_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'mos{}-back.pi'.format(self.mos2_prefix), 'mos{}-back-{}.pi'.format(self.mos2_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'mos{}.rmf'.format(self.mos2_prefix), 'mos{}-{}.rmf'.format(self.mos2_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'mos{}.arf'.format(self.mos2_prefix), 'mos{}-{}.arf'.format(self.mos2_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'mos{}-obj-im-sp-det.fits'.format(self.mos2_prefix),
+                    'mos{}-sp-{}.fits'.format(self.mos2_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+
+        if pn:
+            args = ['mv', 'pn{}-obj.pi'.format(self.pn_prefix), 'pn{}-obj-{}.pi'.format(self.pn_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'pn{}-back.pi'.format(self.pn_prefix), 'pn{}-back-{}.pi'.format(self.pn_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'pn{}.rmf'.format(self.pn_prefix), 'pn{}-{}.rmf'.format(self.pn_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'pn{}.arf'.format(self.pn_prefix), 'pn{}-{}.arf'.format(self.pn_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+            args = ['mv', 'pn{}-obj-im-sp-det.fits'.format(self.pn_prefix),
+                    'pn{}-sp-{}.fits'.format(self.pn_prefix, name)]
+            proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
+
+    def grppha_mos1(self, name="", bin_value=20):
+        if os.path.isfile(os.path.join(self.folder_list["epic"], 'mos{}-obj-{}-grp.pi'.format(self.mos1_prefix, name))):
+            os.remove(os.path.join(self.folder_list["epic"], 'mos{}-obj-{}-grp.pi'.format(self.mos1_prefix, name)))
+
+        args = ['grppha',
+                'mos{}-obj-{}.pi'.format(self.mos1_prefix, name),
+                'mos{}-obj-{}-grp.pi'.format(self.mos1_prefix, name),
+                'chkey BACKFILE mos{0}-back-{1}.pi & chkey RESPFILE mos{0}-{1}.rmf & \
+                 chkey ANCRFILE mos{0}-{1}.arf & group min {2} & exit'.format(self.mos1_prefix, name, bin_value)]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
-        args = ['mv', 'mos{}-back.pi'.format(self.mos1_prefix), 'mos{}-back-{}.pi'.format(self.mos1_prefix, name)]
+    def grppha_mos2(self, name="", bin_value=20):
+        if os.path.isfile(os.path.join(self.folder_list["epic"], 'mos{}-obj-{}-grp.pi'.format(self.mos2_prefix, name))):
+            os.remove(os.path.join(self.folder_list["epic"], 'mos{}-obj-{}-grp.pi'.format(self.mos2_prefix, name)))
+
+        args = ['grppha',
+                'mos{}-obj-{}.pi'.format(self.mos2_prefix, name),
+                'mos{}-obj-{}-grp.pi'.format(self.mos2_prefix, name),
+                'chkey BACKFILE mos{0}-back-{1}.pi & chkey RESPFILE mos{0}-{1}.rmf & \
+                 chkey ANCRFILE mos{0}-{1}.arf & group min {2} & exit'.format(self.mos2_prefix, name, bin_value)]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
-        args = ['mv', 'mos{}.rmf'.format(self.mos1_prefix), 'mos{}-{}.rmf'.format(self.mos1_prefix, name)]
+    def grppha_pn(self, name="", bin_value=20):
+        if os.path.isfile(os.path.join(self.folder_list["epic"], 'pn{}-obj-{}-grp.pi'.format(self.pn_prefix, name))):
+            os.remove(os.path.join(self.folder_list["epic"], 'pn{}-obj-{}-grp.pi'.format(self.pn_prefix, name)))
+
+        args = ['grppha',
+                'pn{}-obj-{}.pi'.format(self.pn_prefix, name),
+                'pn{}-obj-{}-grp.pi'.format(self.pn_prefix, name),
+                'chkey BACKFILE pn{0}-back-{1}.pi & chkey RESPFILE pn{0}-{1}.rmf & \
+                 chkey ANCRFILE pn{0}-{1}.arf & group min {2} & exit'.format(self.pn_prefix, name, bin_value)]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
-        args = ['mv', 'mos{}.arf'.format(self.mos1_prefix), 'mos{}-{}.arf'.format(self.mos1_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-        args = ['mv', 'mos{}-obj-im-sp-det.fits'.format(self.mos1_prefix),
-                'mos{}-sp-{}.fits'.format(self.mos1_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-
-
-        args = ['mv', 'mos{}-obj.pi'.format(self.mos2_prefix), 'mos{}-obj-{}.pi'.format(self.mos2_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-        args = ['mv', 'mos{}-back.pi'.format(self.mos2_prefix), 'mos{}-back-{}.pi'.format(self.mos2_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-        args = ['mv', 'mos{}.rmf'.format(self.mos2_prefix), 'mos{}-{}.rmf'.format(self.mos2_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-        args = ['mv', 'mos{}.arf'.format(self.mos2_prefix), 'mos{}-{}.arf'.format(self.mos2_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-        args = ['mv', 'mos{}-obj-im-sp-det.fits'.format(self.mos2_prefix),
-                'mos{}-sp-{}.fits'.format(self.mos2_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-
-
-        args = ['mv', 'pn{}-obj.pi'.format(self.pn_prefix), 'pn{}-obj-{}.pi'.format(self.pn_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-        args = ['mv', 'pn{}-back.pi'.format(self.pn_prefix), 'pn{}-back-{}.pi'.format(self.pn_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-        args = ['mv', 'pn{}.rmf'.format(self.pn_prefix), 'pn{}-{}.rmf'.format(self.pn_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-        args = ['mv', 'pn{}.arf'.format(self.pn_prefix), 'pn{}-{}.arf'.format(self.pn_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-        args = ['mv', 'pn{}-obj-im-sp-det.fits'.format(self.pn_prefix),
-                'pn{}-sp-{}.fits'.format(self.pn_prefix, name)]
-        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
-
-    def grppha_mos1(self, bin_value=20):
-        pass
-
-    def grppha_mos2(self, bin_value=20):
-        pass
-
-    def grppha_pn(self, bin_value=20):
-        pass
