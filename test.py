@@ -81,16 +81,13 @@ mos1_region = "reg1-{}-{}.txt".format(inner_radius, outer_radius)
 mos2_region = "reg2-{}-{}.txt".format(inner_radius, outer_radius)
 pn_region = "reg3-{}-{}.txt".format(inner_radius, outer_radius)
 
-obs1.mos1_spectra(region_file=mos1_region, mask=1, with_image=False)
+#obs1.mos1_spectra(region_file=mos1_region, mask=1, with_image=False)
 obs1.mos2_spectra(region_file=mos2_region, mask=1, with_image=False)
-obs1.pn_spectra(region_file=pn_region, mask=1, with_image=False)
+#obs1.pn_spectra(region_file=pn_region, mask=1, with_image=False)
 #obs1.comb_image(mask=1)
-obs1.rename_spectra_output(inner_radius=inner_radius, outer_radius=outer_radius, mos1=True, mos2=True, pn=True)
+obs1.rename_spectra_output(inner_radius=inner_radius, outer_radius=outer_radius, mos1=False, mos2=True, pn=False)
 
 name="{}-{}".format(inner_radius, outer_radius)
-obs1.grppha_mos1(name=name)
+#obs1.grppha_mos1(name=name)
 obs1.grppha_mos2(name=name)
-obs1.grppha_pn(name=name)
-
-# Not:
-# mos2 spectrumunda bir sorun var
+#obs1.grppha_pn(name=name)

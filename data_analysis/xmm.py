@@ -335,8 +335,8 @@ class Observation:
         self.mos1_detx = 206.5
         self.mos1_dety = -79.4
 
-        self.mos2_detx = 61.8
-        self.mos2_dety = -81.6
+        self.mos2_detx = 95.3
+        self.mos2_dety = -126.0
 
         self.pn_detx = 228.6
         self.pn_dety = -40.6
