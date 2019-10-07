@@ -139,8 +139,14 @@ class Observation:
             lines = f.readlines()
         """
 
+        # A1589
         # command.csh dosyasına bak
-        self.mos1_ccds = (1, 1, 1, 0, 1, 1, 1)
+        #self.mos1_ccds = (1, 1, 1, 0, 1, 1, 1)
+        #self.mos2_ccds = (1, 1, 1, 1, 1, 1, 1)
+        #self.pn_ccds = (1, 1, 1, 1)
+
+        # A2667
+        self.mos1_ccds = (1, 1, 1, 1, 1, 1, 1)
         self.mos2_ccds = (1, 1, 1, 1, 1, 1, 1)
         self.pn_ccds = (1, 1, 1, 1)
 
@@ -332,14 +338,25 @@ class Observation:
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
     def set_detx_dety(self):
-        self.mos1_detx = 206.5
-        self.mos1_dety = -79.4
+        # A1589
+        #self.mos1_detx = 206.5
+        #self.mos1_dety = -79.4
 
-        self.mos2_detx = 95.3
-        self.mos2_dety = -126.0
+        #self.mos2_detx = 95.3
+        #self.mos2_dety = -126.0
 
-        self.pn_detx = 228.6
-        self.pn_dety = -40.6
+        #self.pn_detx = 228.6
+        #self.pn_dety = -40.6
+
+        # A2667
+        self.mos1_detx = 328.21
+        self.mos1_dety = -138.58
+
+        self.mos2_detx = -2.94
+        self.mos2_dety = 98.86
+
+        self.pn_detx = 209.27
+        self.pn_dety = -258.31
 
     def create_region_file(self, inner_radius, outer_radius):
         inner_radius_phy = float(inner_radius) * 20.0
