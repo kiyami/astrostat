@@ -29,6 +29,8 @@ def initialise_new_data(obs):
     obs.set_detx_dety()
 
 def initialise_existing_data(obs):
+    obs.cifbuild()
+    obs.odfingest()
     obs.set_folders()
     obs.find_excluded_ccds()  # not automatic yet
     obs.set_prefixes()
@@ -52,13 +54,13 @@ def radial_profile(obs, radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_
             mos2_region = "reg2-{}-{}.txt".format(inner_radius, outer_radius)
             obs.mos2_spectra(region_file=mos2_region, mask=mask, with_image=with_image)
             obs.rename_spectra_output(inner_radius=inner_radius, outer_radius=outer_radius, mos1=False, mos2=True, pn=False)
-            obs.grppha_mos2(name=name)
+            obs.grppha_mos2(name=name, bin_value=bin_value)
 
         if pn:
             pn_region = "reg3-{}-{}.txt".format(inner_radius, outer_radius)
             obs.pn_spectra(region_file=pn_region, mask=mask, with_image=with_image)
             obs.rename_spectra_output(inner_radius=inner_radius, outer_radius=outer_radius, mos1=False, mos2=False, pn=True)
-            obs.grppha_pn(name=name)
+            obs.grppha_pn(name=name, bin_value=bin_value)
 
         if with_image:
             obs.comb_image(mask=mask, mos1=mos1, mos2=mos2, pn=pn)
@@ -100,9 +102,8 @@ obs1.grppha_mos1(name=name)
 obs1.grppha_mos2(name=name)
 obs1.grppha_pn(name=name)
 """
-radius_list = [0,60]
-bin_value = 100
+radius_list = [0, 60, 120, 240, 360, 600]
+bin_value = 50
 initialise_existing_data(obs=obs1)
-radial_profile(obs=obs1, radius_list=radius_list, mos1=False, mos2=False, pn=True, mask=1, bin_value=bin_value, with_image=False)
+radial_profile(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_value=bin_value, with_image=False)
 
-# mos1 mos2 bitti pn yap sadece
