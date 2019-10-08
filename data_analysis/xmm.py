@@ -146,7 +146,7 @@ class Observation:
         #self.pn_ccds = (1, 1, 1, 1)
 
         # A2667
-        self.mos1_ccds = (1, 1, 1, 1, 1, 1, 1)
+        self.mos1_ccds = (1, 1, 1, 0, 1, 1, 1)
         self.mos2_ccds = (1, 1, 1, 1, 1, 1, 1)
         self.pn_ccds = (1, 1, 1, 1)
 

@@ -8,7 +8,7 @@ from data_analysis import xmm
 
 # A2667
 # initial parameters
-object_name = "2667"
+object_name = "A2667"
 obs_id = "0148990101"
 odf_path = "/Users/kym/PycharmProjects/astrostat/data/A2667/0148990101/ODF"
 
@@ -65,6 +65,22 @@ def radial_profile(obs, radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_
         if with_image:
             obs.comb_image(mask=mask, mos1=mos1, mos2=mos2, pn=pn)
 
+def rebin_spectra(obs, radius_list, mos1=True, mos2=True, pn=True, bin_value=20):
+    annulus_list = [(int(radius_list[i]), int(radius_list[i + 1])) for i in range(len(radius_list) - 1)]
+    for annulus in annulus_list:
+        inner_radius = annulus[0]
+        outer_radius = annulus[1]
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        if mos1:
+            obs.grppha_mos1(name=name, bin_value=bin_value)
+
+        if mos2:
+             obs.grppha_mos2(name=name, bin_value=bin_value)
+
+        if pn:
+             obs.grppha_pn(name=name, bin_value=bin_value)
+
 """
 obs1.cifbuild()
 obs1.odfingest()
@@ -102,8 +118,13 @@ obs1.grppha_mos1(name=name)
 obs1.grppha_mos2(name=name)
 obs1.grppha_pn(name=name)
 """
-radius_list = [0, 60, 120, 240, 360, 600]
-bin_value = 50
+#radius_list = [0, 60, 120, 240, 360, 600]
+#radius_list = [0, 600]
+
+#bin_value = 50
 initialise_existing_data(obs=obs1)
-radial_profile(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_value=bin_value, with_image=False)
+#radial_profile(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_value=bin_value, with_image=False)
+
+radius_list = [360, 600]
+rebin_spectra(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, bin_value=20)
 
