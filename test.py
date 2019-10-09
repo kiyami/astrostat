@@ -81,50 +81,15 @@ def rebin_spectra(obs, radius_list, mos1=True, mos2=True, pn=True, bin_value=20)
         if pn:
              obs.grppha_pn(name=name, bin_value=bin_value)
 
-"""
-obs1.cifbuild()
-obs1.odfingest()
-obs1.chain()
-obs1.set_folders()
-obs1.copy_events()
-obs1.epic_filter()
 
-obs1.find_excluded_ccds() # not automatic yet
-obs1.set_prefixes() # not automatic yet
-#obs1.cheese()
-#obs1.mos1_spectra()
-#obs1.mos2_spectra()
-#obs1.pn_spectra()
-#obs1.comb_image(mask=0, mos1=True, mos2=True, pn=True)
-
-obs1.set_detx_dety() # not automatic yet
-
-inner_radius=0
-outer_radius=60
-obs1.create_region_file(inner_radius=inner_radius, outer_radius=outer_radius)
-
-mos1_region = "reg1-{}-{}.txt".format(inner_radius, outer_radius)
-mos2_region = "reg2-{}-{}.txt".format(inner_radius, outer_radius)
-pn_region = "reg3-{}-{}.txt".format(inner_radius, outer_radius)
-
-obs1.mos1_spectra(region_file=mos1_region, mask=1, with_image=False)
-obs1.mos2_spectra(region_file=mos2_region, mask=1, with_image=False)
-obs1.pn_spectra(region_file=pn_region, mask=1, with_image=False)
-#obs1.comb_image(mask=1)
-obs1.rename_spectra_output(inner_radius=inner_radius, outer_radius=outer_radius, mos1=False, mos2=True, pn=False)
-
-name="{}-{}".format(inner_radius, outer_radius)
-obs1.grppha_mos1(name=name)
-obs1.grppha_mos2(name=name)
-obs1.grppha_pn(name=name)
-"""
-#radius_list = [0, 60, 120, 240, 360, 600]
-#radius_list = [0, 600]
-
-#bin_value = 50
 initialise_existing_data(obs=obs1)
-#radial_profile(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_value=bin_value, with_image=False)
 
-radius_list = [360, 600]
-rebin_spectra(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, bin_value=20)
+#radius_list = [0, 60, 120, 240, 360, 600]
+radius_list = [0, 600]
 
+bin_value = 100
+radial_profile(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_value=bin_value, with_image=True)
+
+#rebin_radius_list = [0, 600]
+#rebin_value = 100
+#rebin_spectra(obs=obs1, radius_list=rebin_radius_list, mos1=True, mos2=True, pn=True, bin_value=rebin_value)
