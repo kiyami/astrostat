@@ -85,11 +85,11 @@ def rebin_spectra(obs, radius_list, mos1=True, mos2=True, pn=True, bin_value=20)
 initialise_existing_data(obs=obs1)
 
 #radius_list = [0, 60, 120, 240, 360, 600]
-radius_list = [0, 600]
+radius_list = [300, 600]
 
-bin_value = 100
-radial_profile(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_value=bin_value, with_image=True)
+#bin_value = 50
+#radial_profile(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_value=bin_value, with_image=False)
 
-#rebin_radius_list = [0, 600]
-#rebin_value = 100
-#rebin_spectra(obs=obs1, radius_list=rebin_radius_list, mos1=True, mos2=True, pn=True, bin_value=rebin_value)
+rebin_radius_list = [300, 600]
+rebin_value = 20
+rebin_spectra(obs=obs1, radius_list=rebin_radius_list, mos1=True, mos2=True, pn=True, bin_value=rebin_value)
