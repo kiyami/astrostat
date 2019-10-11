@@ -8,11 +8,34 @@ class Gaussian:
         self.component_number = component_number
         self.LineE = [LineE, -0.05, 0, 0, 1e+06, 1e+06]
         self.Sigma = [0.0, -0.05, 0, 0, 10, 20]
-        self.norm = [1e-5, -0.01, 0, 0, 1e+24, 1e+24]
+        self.norm = [1e-5, 0.01, 0, 0, 1e+24, 1e+24]
 
     def get_params(self):
         return self.LineE, self.Sigma, self.norm
 
+    @classmethod
+    def set_params(cls, comp, gau):
+        comp.LineE.values = gau.LineE
+        comp.Sigma.values = gau.Sigma
+        comp.norm.values = gau.norm
+
+class Apec:
+    def __init__(self, component_number, kT, Abundanc, Redshift):
+        self.component_number = component_number
+        self.kT = [kT, 0.01, 0.008, 0.008, 64.0, 64.0]
+        self.Abundanc = [Abundanc, 0.001, 0, 0, 5, 5]
+        self.Redshift = [Redshift, -0.001, 0, 0, 2, 2]
+        self.norm = [1e-5, -0.01, 0, 0, 1e+24, 1e+24]
+
+    def get_params(self):
+        return self.kT, self.Abundanc, self.Redshift, self.norm
+
+    @classmethod
+    def set_params(cls, comp, apec):
+        comp.kT.values = apec.kT
+        comp.Abundanc.values = apec.Abundanc
+        comp.Redshift.values = apec.Redshift
+        comp.norm.values = apec.norm
 
 class Spectrum:
 
@@ -66,14 +89,45 @@ class Spectrum:
         self.spec_mos2 = xspec.AllData(2)
         self.spec_mos2.ignore(self.energy_range["mos2"])
 
-        xspec.AllModels += "apec+pow"
+        xspec.AllModels += "apec+gau+gau"
 
         self.m1 = xspec.AllModels(1)
         self.m2 = xspec.AllModels(2)
 
+        m1_apec1 = Apec(1, 3, 0.3, 0.233)
+        m1_gau1 = Gaussian(1, 1.48)
+        m1_gau2 = Gaussian(1, 1.74)
+
+        m2_apec1 = Apec(1, 5, 0.4, 0.233)
+        m2_gau1 = Gaussian(1, 3.48)
+        m2_gau2 = Gaussian(1, 4.74)
+
+        m1_comp1 = self.m1.apec
+        m1_comp2 = self.m1.gaussian
+        m1_comp3 = self.m1.gaussian_3
+
+        m2_comp1 = self.m2.apec
+        m2_comp2 = self.m2.gaussian
+        m2_comp3 = self.m2.gaussian_3
+
+        Apec.set_params(m1_comp1, m1_apec1)
+        Gaussian.set_params(m1_comp2, m1_gau1)
+        Gaussian.set_params(m1_comp3, m1_gau2)
+
+        Apec.set_params(m2_comp1, m2_apec1)
+        Gaussian.set_params(m2_comp2, m2_gau1)
+        Gaussian.set_params(m2_comp3, m2_gau2)
+
         xspec.AllModels.show()
+
         #xspec.AllData.nSpectra
-        #xspec.Fit.perform()
+        xspec.Fit.perform()
+
+    def set_apec_parameters(self, apec, values):
+        apec.values = values
+
+    def set_powerlaw_parameters(self, powerlaw, values):
+        powerlaw.values = values
 
     def set_fit_parameters(self):
         xspec.AllData.clear()
