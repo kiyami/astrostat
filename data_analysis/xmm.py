@@ -18,7 +18,6 @@ class Observation:
         self.esas_caldb = os.path.abspath(os.path.join(Observation.sas_ccfpath, 'esas'))
         self.envvars['esas_caldb'] = self.esas_caldb
 
-
     def get_info(self):
         print("Object: {}".format(self.object_name),
               "Obs_Id: {}".format(self.obs_id), sep="\n")
@@ -478,3 +477,38 @@ class Observation:
                  chkey ANCRFILE pn{0}-{1}.arf & group min {2} & exit'.format(self.pn_prefix, name, bin_value)]
         proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars).wait()
 
+    def proton_scale_mos1(self, name=""):
+        args = ['proton_scale',
+                'caldb={}'.format(self.envvars['esas_caldb']),
+                'mode=1',
+                'detector=1',
+                'maskfile=mos{}-sp-{}.fits'.format(self.mos1_prefix, name),
+                'specfile=mos{}-obj-{}.pi'.format(self.mos1_prefix, name)]
+        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars,  stdout=subprocess.PIPE)
+        out = proc.communicate()[0].decode("utf-8").splitlines()
+        self.mos1_area = [out[i] for i in range(len(out)) if "Area" in out[i]][0].split()[1]
+        print("MOS1 Area: {}".format(self.mos1_area))
+
+    def proton_scale_mos2(self, name=""):
+        args = ['proton_scale',
+                'caldb={}'.format(self.envvars['esas_caldb']),
+                'mode=1',
+                'detector=2',
+                'maskfile=mos{}-sp-{}.fits'.format(self.mos2_prefix, name),
+                'specfile=mos{}-obj-{}.pi'.format(self.mos2_prefix, name)]
+        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars,  stdout=subprocess.PIPE)
+        out = proc.communicate()[0].decode("utf-8").splitlines()
+        self.mos2_area = [out[i] for i in range(len(out)) if "Area" in out[i]][0].split()[1]
+        print("MOS2 Area: {}".format(self.mos2_area))
+
+    def proton_scale_pn(self, name=""):
+        args = ['proton_scale',
+                'caldb={}'.format(self.envvars['esas_caldb']),
+                'mode=1',
+                'detector=3',
+                'maskfile=pn{}-sp-{}.fits'.format(self.pn_prefix, name),
+                'specfile=pn{}-obj-{}.pi'.format(self.pn_prefix, name)]
+        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.envvars,  stdout=subprocess.PIPE)
+        out = proc.communicate()[0].decode("utf-8").splitlines()
+        self.pn_area = [out[i] for i in range(len(out)) if "Area" in out[i]][0].split()[1]
+        print("PN Area: {}".format(self.pn_area))

@@ -2,6 +2,18 @@ import xspec
 import os
 import sys
 
+class MyModel:
+    @staticmethod
+    def thaw_parameter(par):
+        par.frozen = False
+
+    @staticmethod
+    def freeze_parameter(par):
+        par.frozen = True
+
+    @staticmethod
+    def set_norm_zero(comp):
+        comp.norm.values = [0, -0.01, 0, 0, 1e+24, 1e+24]
 
 class Gaussian:
     def __init__(self, component_number, LineE):
@@ -19,13 +31,38 @@ class Gaussian:
         comp.Sigma.values = gau.Sigma
         comp.norm.values = gau.norm
 
+    @classmethod
+    def set_norm_zero(cls, comp):
+        comp.norm.values = [0, -0.01, 0, 0, 1e+24, 1e+24]
+
+    @classmethod
+    def thaw_parameter(cls, par):
+        par.frozen = False
+
+    @classmethod
+    def freeze_parameter(cls, par):
+        par.frozen = True
+
+"""
+class Gaussian2:
+    def __init__(self, component_number, values):
+        self.component_number = component_number
+        self.mos1 = values["mos1"]
+        self.mos2 = values["mos2"]
+        self.pn = values["pn"]
+        self.rass = values["rass"]
+
+        self.LineE = [LineE, -0.05, 0, 0, 1e+06, 1e+06]
+        self.Sigma = [0.0, -0.05, 0, 0, 10, 20]
+        self.norm = [1e-5, 0.01, 0, 0, 1e+24, 1e+24]
+"""
 class Apec:
     def __init__(self, component_number, kT, Abundanc, Redshift):
         self.component_number = component_number
         self.kT = [kT, 0.01, 0.008, 0.008, 64.0, 64.0]
         self.Abundanc = [Abundanc, 0.001, 0, 0, 5, 5]
         self.Redshift = [Redshift, -0.001, 0, 0, 2, 2]
-        self.norm = [1e-5, -0.01, 0, 0, 1e+24, 1e+24]
+        self.norm = [1e-5, 0.01, 0, 0, 1e+24, 1e+24]
 
     def get_params(self):
         return self.kT, self.Abundanc, self.Redshift, self.norm
@@ -36,6 +73,18 @@ class Apec:
         comp.Abundanc.values = apec.Abundanc
         comp.Redshift.values = apec.Redshift
         comp.norm.values = apec.norm
+
+    @classmethod
+    def set_norm_zero(cls, comp):
+        comp.norm.values = [0, -0.01, 0, 0, 1e+24, 1e+24]
+
+    @classmethod
+    def thaw_parameter(cls, par):
+        par.frozen = False
+
+    @classmethod
+    def freeze_parameter(cls, par):
+        par.frozen = True
 
 class Spectrum:
 
@@ -81,7 +130,10 @@ class Spectrum:
 
         os.chdir(self.path)
 
-        xspec.AllData("1:1 {} 2:2 {}".format(self.spectrum_files["mos1"], self.spectrum_files["mos2"]))
+        xspec.AllData("1:1 {} 2:2 {} 3:3 {} 4:4 {}".format(self.spectrum_files["mos1"],
+                                                           self.spectrum_files["mos2"],
+                                                           self.spectrum_files["pn"],
+                                                           self.spectrum_files["rass"]))
 
         self.spec_mos1 = xspec.AllData(1)
         self.spec_mos1.ignore(self.energy_range["mos1"])
@@ -93,14 +145,24 @@ class Spectrum:
 
         self.m1 = xspec.AllModels(1)
         self.m2 = xspec.AllModels(2)
+        self.m3 = xspec.AllModels(3)
+        self.m4 = xspec.AllModels(4)
 
         m1_apec1 = Apec(1, 3, 0.3, 0.233)
         m1_gau1 = Gaussian(1, 1.48)
         m1_gau2 = Gaussian(1, 1.74)
 
-        m2_apec1 = Apec(1, 5, 0.4, 0.233)
-        m2_gau1 = Gaussian(1, 3.48)
-        m2_gau2 = Gaussian(1, 4.74)
+        m2_apec1 = Apec(1, 3, 0.3, 0.233)
+        m2_gau1 = Gaussian(1, 1.48)
+        m2_gau2 = Gaussian(1, 1.74)
+
+        m3_apec1 = Apec(1, 3, 0.3, 0.233)
+        m3_gau1 = Gaussian(1, 1.48)
+        m3_gau2 = Gaussian(1, 1.74)
+
+        m4_apec1 = Apec(1, 3, 0.3, 0.233)
+        m4_gau1 = Gaussian(1, 1.48)
+        m4_gau2 = Gaussian(1, 1.74)
 
         m1_comp1 = self.m1.apec
         m1_comp2 = self.m1.gaussian
@@ -110,6 +172,14 @@ class Spectrum:
         m2_comp2 = self.m2.gaussian
         m2_comp3 = self.m2.gaussian_3
 
+        m3_comp1 = self.m3.apec
+        m3_comp2 = self.m3.gaussian
+        m3_comp3 = self.m3.gaussian_3
+
+        m4_comp1 = self.m4.apec
+        m4_comp2 = self.m4.gaussian
+        m4_comp3 = self.m4.gaussian_3
+
         Apec.set_params(m1_comp1, m1_apec1)
         Gaussian.set_params(m1_comp2, m1_gau1)
         Gaussian.set_params(m1_comp3, m1_gau2)
@@ -118,10 +188,21 @@ class Spectrum:
         Gaussian.set_params(m2_comp2, m2_gau1)
         Gaussian.set_params(m2_comp3, m2_gau2)
 
+        Apec.set_params(m3_comp1, m3_apec1)
+        Gaussian.set_params(m3_comp2, m3_gau1)
+        Gaussian.set_params(m3_comp3, m3_gau2)
+
+        Apec.set_params(m4_comp1, m4_apec1)
+        Gaussian.set_params(m4_comp2, m4_gau1)
+        Gaussian.set_params(m4_comp3, m4_gau2)
+
+        MyModel.freeze_parameter(m1_comp1.norm)
+        MyModel.set_norm_zero(m4_comp1)
+
         xspec.AllModels.show()
 
         #xspec.AllData.nSpectra
-        xspec.Fit.perform()
+        #xspec.Fit.perform()
 
     def set_apec_parameters(self, apec, values):
         apec.values = values
