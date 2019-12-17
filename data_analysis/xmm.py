@@ -69,7 +69,7 @@ class Observation:
             args = ['epchain']
             proc = subprocess.Popen(args, cwd=self.ODF_path, env=self.envvars).wait()
         else:
-            print("**PN*PI*EVLI* files already exist!")
+            print("*PN*PI*EVLI* files already exist!")
 
         if len(glob.glob(os.path.join(self.ODF_path, '*PN*OO*EVLI*'))) == 0:
             args = ['epchain', 'withoutoftime=true']
@@ -145,8 +145,13 @@ class Observation:
         #self.pn_ccds = (1, 1, 1, 1)
 
         # A2667
-        self.mos1_ccds = (1, 1, 1, 0, 1, 1, 1)
-        self.mos2_ccds = (1, 1, 1, 1, 1, 1, 1)
+        #self.mos1_ccds = (1, 1, 1, 0, 1, 1, 1)
+        #self.mos2_ccds = (1, 1, 1, 1, 1, 1, 1)
+        #self.pn_ccds = (1, 1, 1, 1)
+
+        # A1589
+        self.mos1_ccds = (1, 1, 1, 0, 1, 0, 1)
+        self.mos2_ccds = (1, 1, 1, 1, 0, 1, 1)
         self.pn_ccds = (1, 1, 1, 1)
 
     def set_prefixes(self):
@@ -348,14 +353,24 @@ class Observation:
         #self.pn_dety = -40.6
 
         # A2667
-        self.mos1_detx = 328.21
-        self.mos1_dety = -138.58
+        #self.mos1_detx = 328.21
+        #self.mos1_dety = -138.58
 
-        self.mos2_detx = -2.94
-        self.mos2_dety = 98.86
+        #self.mos2_detx = -2.94
+        #self.mos2_dety = 98.86
 
-        self.pn_detx = 209.27
-        self.pn_dety = -258.31
+        #self.pn_detx = 209.27
+        #self.pn_dety = -258.31
+
+        # A1835
+        self.mos1_detx = 160.36793
+        self.mos1_dety = -217.38445
+
+        self.mos2_detx = 39.185507
+        self.mos2_dety = -81.309178
+
+        self.pn_detx = 141.5
+        self.pn_dety = -94.417516
 
     def create_region_file(self, inner_radius, outer_radius):
         inner_radius_phy = float(inner_radius) * 20.0

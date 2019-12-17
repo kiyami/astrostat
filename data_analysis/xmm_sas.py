@@ -214,6 +214,27 @@ class Observation:
         else:
             print("{} already exist..".format(os.path.basename(srclist[0])))
 
+    def create_point_source_region_file(self, camera='mos1', src_radius='0.005'):
+        path = self.folder_list[camera]
+
+        reg_file = glob.glob(os.path.join(path, "*srclist.reg"))
+        img_file = glob.glob(os.path.join(path, "*image*"))
+
+        if len(reg_file) == 0:
+            args = ["srcdisplay",
+                    "boxlistset={}".format(reg_file[0]),
+                    "imageset={}".format(img_file[0]),
+                    "sourceradius={}".format(src_radius)]
+            proc = subprocess.Popen(args, cwd=path, env=self.envvars).wait()
+        """
+        srcdisplay
+        boxlistset = mos1_srclist.fits
+        withimageset = mos1_image_300_10000.fits
+        sourceradius = 0.004
+        withregionfile = true
+        regionfile = srclist.reg
+        """
+
     def filter_point_sources(self):
         pass
 

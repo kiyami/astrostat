@@ -8,9 +8,16 @@ from data_analysis import xmm
 
 # A2667
 # initial parameters
-object_name = "A2667"
-obs_id = "0148990101"
-odf_path = "/Users/kym/PycharmProjects/astrostat/data/A2667/0148990101/ODF"
+#object_name = "A2667"
+#obs_id = "0148990101"
+#odf_path = "/Users/kym/PycharmProjects/astrostat/data/A2667/0148990101/ODF"
+
+# A1835
+# initial parameters
+object_name = "A1835"
+obs_id = "0551830101"
+odf_path = "/Users/kym/PycharmProjects/astrostat/data/A1835/0551830101/ODF"
+
 
 obs1 = xmm.Observation(object_name, obs_id, odf_path)
 obs1.get_info()
@@ -23,6 +30,7 @@ def initialise_new_data(obs):
     obs.copy_events()
     obs.epic_filter()
 
+def initialise_new_data2(obs):
     obs.find_excluded_ccds()  # not automatic yet
     obs.set_prefixes()  # not automatic yet
     obs.cheese()
@@ -89,7 +97,23 @@ def print_area(obs, print_area_region):
     obs.proton_scale_mos2(name)
     obs.proton_scale_pn(name)
 
+#initialise_new_data(obs=obs1)
+#initialise_new_data2(obs=obs1)
 initialise_existing_data(obs=obs1)
+
+radius_list = [113.3, 453.3]
+bin_value = 50
+radial_profile(obs=obs1, radius_list=radius_list, mos1=True, mos2=False, pn=False, mask=1, bin_value=bin_value, with_image=False)
+#print_area_region = [0, 453.3]
+#print_area(obs=obs1, print_area_region=print_area_region)
+
+#rebin_radius_list = [0, 453.3]
+#rebin_value = 50
+#rebin_spectra(obs=obs1, radius_list=rebin_radius_list, mos1=True, mos2=True, pn=False, bin_value=rebin_value)
+
+##############
+
+#initialise_existing_data(obs=obs1)
 
 #radius_list = [0, 60, 120, 240, 360, 600]
 #radius_list = [0, 120, 300, 600]
@@ -97,9 +121,9 @@ initialise_existing_data(obs=obs1)
 #bin_value = 50
 #radial_profile(obs=obs1, radius_list=radius_list, mos1=True, mos2=True, pn=True, mask=1, bin_value=bin_value, with_image=False)
 
-rebin_radius_list = [300, 600]
-rebin_value = 75
-rebin_spectra(obs=obs1, radius_list=rebin_radius_list, mos1=True, mos2=True, pn=True, bin_value=rebin_value)
+#rebin_radius_list = [300, 600]
+#rebin_value = 75
+#rebin_spectra(obs=obs1, radius_list=rebin_radius_list, mos1=True, mos2=True, pn=True, bin_value=rebin_value)
 
 #print_area_region = [300,600]
 #print_area(obs=obs1, print_area_region=print_area_region)
