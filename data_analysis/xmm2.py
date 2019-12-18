@@ -179,6 +179,108 @@ class Observation:
                                env=self.environ,
                                clobber=clobber)
 
+    def set_detx_dety(self, info_dict):
+        self.mos1_detx = info_dict["mos1_detx"]
+        self.mos1_dety = info_dict["mos1_dety"]
+
+        self.mos2_detx = info_dict["mos2_detx"]
+        self.mos2_dety = info_dict["mos2_dety"]
+
+        self.pn_detx = info_dict["pn_detx"]
+        self.pn_dety = info_dict["pn_dety"]
+
+    def create_region_file(self, inner_radius, outer_radius):
+        inner_radius_phy = float(inner_radius) * 20.0
+        outer_radius_phy = float(outer_radius) * 20.0
+
+        mos1_text = "&&((DETX,DETY) IN circle({0},{1},{2}))&&!((DETX,DETY) IN circle({0},{1},{3}))".format(self.mos1_detx,
+                                                                                                           self.mos1_dety,
+                                                                                                           outer_radius_phy,
+                                                                                                           inner_radius_phy)
+        mos1_file_name = "reg1-{}-{}.txt".format(int(inner_radius), int(outer_radius))
+
+        with open(os.path.join(self.folder_list["regions"], mos1_file_name), "w") as f:
+            f.write(mos1_text)
+
+        mos2_text = "&&((DETX,DETY) IN circle({0},{1},{2}))&&!((DETX,DETY) IN circle({0},{1},{3}))".format(self.mos2_detx,
+                                                                                                           self.mos2_dety,
+                                                                                                           outer_radius_phy,
+                                                                                                           inner_radius_phy)
+        mos2_file_name = "reg2-{}-{}.txt".format(int(inner_radius), int(outer_radius))
+
+        with open(os.path.join(self.folder_list["regions"], mos2_file_name), "w") as f:
+            f.write(mos2_text)
+
+        pn_text = "&&((DETX,DETY) IN circle({0},{1},{2}))&&!((DETX,DETY) IN circle({0},{1},{3}))".format(self.pn_detx,
+                                                                                                         self.pn_dety,
+                                                                                                         outer_radius_phy,
+                                                                                                         inner_radius_phy)
+        pn_file_name = "reg3-{}-{}.txt".format(int(inner_radius), int(outer_radius))
+
+        with open(os.path.join(self.folder_list["regions"], pn_file_name), "w") as f:
+            f.write(pn_text)
+
+    def mos1_spectra(self, region_file='reg.txt', mask=0, with_image=False, elow=400, ehigh=7200):
+
+        if not with_image:
+            elow = 0
+            ehigh = 0
+
+        args = ['mos-spectra',
+                'prefix={}'.format(self.mos1_prefix),
+                'caldb={}'.format(self.environ['esas_caldb']),
+                'region={}/{}'.format("regions", region_file),
+                'mask={}'.format(mask),
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'ccd1={}'.format(self.mos1_ccds[0]),
+                'ccd2={}'.format(self.mos1_ccds[1]),
+                'ccd3={}'.format(self.mos1_ccds[2]),
+                'ccd4={}'.format(self.mos1_ccds[3]),
+                'ccd5={}'.format(self.mos1_ccds[4]),
+                'ccd6={}'.format(self.mos1_ccds[5]),
+                'ccd7={}'.format(self.mos1_ccds[6])]
+
+        self.abstract_proccess(path=self.folder_list["epic"],
+                               file='',
+                               args=args,
+                               cwd=self.folder_list["epic"],
+                               env=self.environ,
+                               clobber=True)
+
+        args = ['mos_back',
+                'prefix={}'.format(self.mos1_prefix),
+                'caldb={}'.format(self.environ['esas_caldb']),
+                'diag=0',
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'ccd1={}'.format(self.mos1_ccds[0]),
+                'ccd2={}'.format(self.mos1_ccds[1]),
+                'ccd3={}'.format(self.mos1_ccds[2]),
+                'ccd4={}'.format(self.mos1_ccds[3]),
+                'ccd5={}'.format(self.mos1_ccds[4]),
+                'ccd6={}'.format(self.mos1_ccds[5]),
+                'ccd7={}'.format(self.mos1_ccds[6])]
+
+        self.abstract_proccess(path=self.folder_list["epic"],
+                               file='',
+                               args=args,
+                               cwd=self.folder_list["epic"],
+                               env=self.environ,
+                               clobber=True)
+
+        if with_image:
+            args = ['rot-im-det-sky',
+                    'prefix={}'.format(self.mos1_prefix),
+                    'mask={}'.format(mask),
+                    'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                    'mode=1']
+
+            self.abstract_proccess(path=self.folder_list["epic"],
+                                   file='',
+                                   args=args,
+                                   cwd=self.folder_list["epic"],
+                                   env=self.environ,
+                                   clobber=True)
+
 
 class Threads:
     @staticmethod
@@ -206,3 +308,15 @@ class Threads:
     @staticmethod
     def cheese(obs, scale=0.5, rate=1.0, dist=40, clobber=False):
         obs.cheese(scale, rate, dist, clobber)
+
+    @staticmethod
+    def set_detx_dety(obs, info_dict):
+        obs.set_detx_dety(info_dict)
+
+    @staticmethod
+    def create_region_file(obs, inner_radius, outer_radius):
+        obs.create_region_file(inner_radius, outer_radius)
+
+    @staticmethod
+    def mos1_spectra(obs, region_file='reg.txt', mask=0, with_image=False, elow=400, ehigh=7200):
+        obs.mos1_spectra(region_file, mask, with_image, elow, ehigh)
