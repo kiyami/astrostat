@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 import subprocess
 from shutil import copyfile, copy
@@ -220,7 +221,14 @@ class Observation:
         with open(os.path.join(self.folder_list["regions"], pn_file_name), "w") as f:
             f.write(pn_text)
 
+        return mos1_file_name, mos2_file_name, pn_file_name
+
     def mos1_spectra(self, region_file='reg.txt', mask=0, with_image=False, elow=400, ehigh=7200):
+
+        temp_region_file = Observation.file_check(path=self.folder_list["regions"], file=region_file)
+        if temp_region_file == '':
+            print("{} region file can not be found!".format(region_file))
+            sys.exit()
 
         if not with_image:
             elow = 0
@@ -281,6 +289,313 @@ class Observation:
                                    env=self.environ,
                                    clobber=True)
 
+    def mos2_spectra(self, region_file='reg.txt', mask=0, with_image=False, elow=400, ehigh=7200):
+
+        temp_region_file = Observation.file_check(path=self.folder_list["regions"], file=region_file)
+        if temp_region_file == '':
+            print("{} region file can not be found!".format(region_file))
+            sys.exit()
+
+        if not with_image:
+            elow = 0
+            ehigh = 0
+
+        args = ['mos-spectra',
+                'prefix={}'.format(self.mos2_prefix),
+                'caldb={}'.format(self.environ['esas_caldb']),
+                'region={}/{}'.format("regions", region_file),
+                'mask={}'.format(mask),
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'ccd1={}'.format(self.mos2_ccds[0]),
+                'ccd2={}'.format(self.mos2_ccds[1]),
+                'ccd3={}'.format(self.mos2_ccds[2]),
+                'ccd4={}'.format(self.mos2_ccds[3]),
+                'ccd5={}'.format(self.mos2_ccds[4]),
+                'ccd6={}'.format(self.mos2_ccds[5]),
+                'ccd7={}'.format(self.mos2_ccds[6])]
+
+        self.abstract_proccess(path=self.folder_list["epic"],
+                               file='',
+                               args=args,
+                               cwd=self.folder_list["epic"],
+                               env=self.environ,
+                               clobber=True)
+
+        args = ['mos_back',
+                'prefix={}'.format(self.mos2_prefix),
+                'caldb={}'.format(self.environ['esas_caldb']),
+                'diag=0',
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'ccd1={}'.format(self.mos2_ccds[0]),
+                'ccd2={}'.format(self.mos2_ccds[1]),
+                'ccd3={}'.format(self.mos2_ccds[2]),
+                'ccd4={}'.format(self.mos2_ccds[3]),
+                'ccd5={}'.format(self.mos2_ccds[4]),
+                'ccd6={}'.format(self.mos2_ccds[5]),
+                'ccd7={}'.format(self.mos2_ccds[6])]
+
+        self.abstract_proccess(path=self.folder_list["epic"],
+                               file='',
+                               args=args,
+                               cwd=self.folder_list["epic"],
+                               env=self.environ,
+                               clobber=True)
+
+        if with_image:
+            args = ['rot-im-det-sky',
+                    'prefix={}'.format(self.mos2_prefix),
+                    'mask={}'.format(mask),
+                    'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                    'mode=1']
+
+            self.abstract_proccess(path=self.folder_list["epic"],
+                                   file='',
+                                   args=args,
+                                   cwd=self.folder_list["epic"],
+                                   env=self.environ,
+                                   clobber=True)
+
+    def pn_spectra(self, region_file='reg.txt', mask=0, with_image=False, elow=400, ehigh=7200):
+
+        temp_region_file = Observation.file_check(path=self.folder_list["regions"], file=region_file)
+        if temp_region_file == '':
+            print("{} region file can not be found!".format(region_file))
+            sys.exit()
+
+        if not with_image:
+            elow = 0
+            ehigh = 0
+
+        args = ['pn-spectra',
+                'prefix={}'.format(self.pn_prefix),
+                'caldb={}'.format(self.environ['esas_caldb']),
+                'region={}/{}'.format("regions", region_file),
+                'mask={}'.format(mask),
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'quad1={}'.format(self.pn_ccds[0]),
+                'quad2={}'.format(self.pn_ccds[1]),
+                'quad3={}'.format(self.pn_ccds[2]),
+                'quad4={}'.format(self.pn_ccds[3])]
+
+        self.abstract_proccess(path=self.folder_list["epic"],
+                               file='',
+                               args=args,
+                               cwd=self.folder_list["epic"],
+                               env=self.environ,
+                               clobber=True)
+
+        args = ['pn_back',
+                'prefix={}'.format(self.mos1_prefix),
+                'caldb={}'.format(self.environ['esas_caldb']),
+                'diag=0',
+                'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                'quad1={}'.format(self.pn_ccds[0]),
+                'quad2={}'.format(self.pn_ccds[1]),
+                'quad3={}'.format(self.pn_ccds[2]),
+                'quad4={}'.format(self.pn_ccds[3])]
+
+        self.abstract_proccess(path=self.folder_list["epic"],
+                               file='',
+                               args=args,
+                               cwd=self.folder_list["epic"],
+                               env=self.environ,
+                               clobber=True)
+
+        if with_image:
+            args = ['rot-im-det-sky',
+                    'prefix={}'.format(self.pn_prefix),
+                    'mask={}'.format(mask),
+                    'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
+                    'mode=1']
+
+            self.abstract_proccess(path=self.folder_list["epic"],
+                                   file='',
+                                   args=args,
+                                   cwd=self.folder_list["epic"],
+                                   env=self.environ,
+                                   clobber=True)
+
+    def rename_mos1_spectra_output(self, inner_radius, outer_radius):
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        file_names_dict = {'mos{}-obj.pi': 'mos{}-obj-{}.pi',
+                           'mos{}-back.pi': 'mos{}-back-{}.pi',
+                           'mos{}.rmf': 'mos{}-{}.rmf',
+                           'mos{}.arf': 'mos{}-{}.arf',
+                           'mos{}-obj-im-sp-det.fits': 'mos{}-sp-{}.fits'}
+
+        args_list = [['mv', key.format(self.mos1_prefix), value.format(self.mos1_prefix, name)] for key, value in file_names_dict.items()]
+
+        for args in args_list:
+            if self.file_check(self.folder_list["epic"], args[1]) == '':
+                print("{} file doesn't exist to rename!".format(args[1]))
+            else:
+                self.abstract_proccess(path=self.folder_list["epic"],
+                                       file='',
+                                       args=args,
+                                       cwd=self.folder_list["epic"],
+                                       env=self.environ,
+                                       clobber=True)
+
+    def rename_mos2_spectra_output(self, inner_radius, outer_radius):
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        file_names_dict = {'mos{}-obj.pi': 'mos{}-obj-{}.pi',
+                           'mos{}-back.pi': 'mos{}-back-{}.pi',
+                           'mos{}.rmf': 'mos{}-{}.rmf',
+                           'mos{}.arf': 'mos{}-{}.arf',
+                           'mos{}-obj-im-sp-det.fits': 'mos{}-sp-{}.fits'}
+
+        args_list = [['mv', key.format(self.mos2_prefix), value.format(self.mos2_prefix, name)] for key, value in file_names_dict.items()]
+
+        for args in args_list:
+            if self.file_check(self.folder_list["epic"], args[1]) == '':
+                print("{} file doesn't exist to rename!".format(args[1]))
+            else:
+                self.abstract_proccess(path=self.folder_list["epic"],
+                                       file='',
+                                       args=args,
+                                       cwd=self.folder_list["epic"],
+                                       env=self.environ,
+                                       clobber=True)
+
+    def rename_pn_spectra_output(self, inner_radius, outer_radius):
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        file_names_dict = {'pn{}-obj.pi': 'pn{}-obj-{}.pi',
+                           'pn{}-back.pi': 'pn{}-back-{}.pi',
+                           'pn{}.rmf': 'pn{}-{}.rmf',
+                           'pn{}.arf': 'pn{}-{}.arf',
+                           'pn{}-obj-im-sp-det.fits': 'pn{}-sp-{}.fits'}
+
+        args_list = [['mv', key.format(self.pn_prefix), value.format(self.pn_prefix, name)] for key, value in file_names_dict.items()]
+
+        for args in args_list:
+            if self.file_check(self.folder_list["epic"], args[1]) == '':
+                print("{} file doesn't exist to rename!".format(args[1]))
+            else:
+                self.abstract_proccess(path=self.folder_list["epic"],
+                                       file='',
+                                       args=args,
+                                       cwd=self.folder_list["epic"],
+                                       env=self.environ,
+                                       clobber=True)
+
+    def grppha_mos1(self,  inner_radius, outer_radius, bin_value=20):
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        if os.path.isfile(os.path.join(self.folder_list["epic"], 'mos{}-obj-{}-grp.pi'.format(self.mos1_prefix, name))):
+            os.remove(os.path.join(self.folder_list["epic"], 'mos{}-obj-{}-grp.pi'.format(self.mos1_prefix, name)))
+
+        args = ['grppha',
+                'mos{}-obj-{}.pi'.format(self.mos1_prefix, name),
+                'mos{}-obj-{}-grp.pi'.format(self.mos1_prefix, name),
+                'chkey BACKFILE mos{0}-back-{1}.pi & chkey RESPFILE mos{0}-{1}.rmf & \
+                 chkey ANCRFILE mos{0}-{1}.arf & group min {2} & exit'.format(self.mos1_prefix, name, bin_value)]
+
+        self.abstract_proccess(path=self.folder_list["epic"],
+                               file='',
+                               args=args,
+                               cwd=self.folder_list["epic"],
+                               env=self.environ,
+                               clobber=True)
+
+    def grppha_mos2(self, inner_radius, outer_radius, bin_value=20):
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        if os.path.isfile(
+                os.path.join(self.folder_list["epic"], 'mos{}-obj-{}-grp.pi'.format(self.mos2_prefix, name))):
+            os.remove(os.path.join(self.folder_list["epic"], 'mos{}-obj-{}-grp.pi'.format(self.mos2_prefix, name)))
+
+        args = ['grppha',
+                'mos{}-obj-{}.pi'.format(self.mos2_prefix, name),
+                'mos{}-obj-{}-grp.pi'.format(self.mos2_prefix, name),
+                'chkey BACKFILE mos{0}-back-{1}.pi & chkey RESPFILE mos{0}-{1}.rmf & \
+                 chkey ANCRFILE mos{0}-{1}.arf & group min {2} & exit'.format(self.mos2_prefix, name, bin_value)]
+
+        self.abstract_proccess(path=self.folder_list["epic"],
+                               file='',
+                               args=args,
+                               cwd=self.folder_list["epic"],
+                               env=self.environ,
+                               clobber=True)
+
+    def grppha_pn(self, inner_radius, outer_radius, bin_value=20):
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        if os.path.isfile(
+                os.path.join(self.folder_list["epic"], 'pn{}-obj-{}-grp.pi'.format(self.pn_prefix, name))):
+            os.remove(
+                os.path.join(self.folder_list["epic"], 'pn{}-obj-{}-grp.pi'.format(self.pn_prefix, name)))
+
+        args = ['grppha',
+                'pn{}-obj-{}.pi'.format(self.pn_prefix, name),
+                'pn{}-obj-{}-grp.pi'.format(self.pn_prefix, name),
+                'chkey BACKFILE pn{0}-back-{1}.pi & chkey RESPFILE mos{0}-{1}.rmf & \
+                 chkey ANCRFILE pn{0}-{1}.arf & group min {2} & exit'.format(self.pn_prefix, name, bin_value)]
+
+        self.abstract_proccess(path=self.folder_list["epic"],
+                               file='',
+                               args=args,
+                               cwd=self.folder_list["epic"],
+                               env=self.environ,
+                               clobber=True)
+
+    def proton_scale_mos1(self, inner_radius, outer_radius):
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        args = ['proton_scale',
+                'caldb={}'.format(self.environ['esas_caldb']),
+                'mode=1',
+                'detector=1',
+                'maskfile=mos{}-sp-{}.fits'.format(self.mos1_prefix, name),
+                'specfile=mos{}-obj-{}.pi'.format(self.mos1_prefix, name)]
+
+        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.environ, stdout=subprocess.PIPE)
+        out = proc.communicate()[0].decode("utf-8").splitlines()
+        self.mos1_area = [out[i] for i in range(len(out)) if "Area" in out[i]][0].split()[1]
+
+        output = "MOS1 Area: {}".format(self.mos1_area)
+        print(output)
+        return output
+
+
+    def proton_scale_mos2(self, inner_radius, outer_radius):
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        args = ['proton_scale',
+                'caldb={}'.format(self.environ['esas_caldb']),
+                'mode=1',
+                'detector=2',
+                'maskfile=mos{}-sp-{}.fits'.format(self.mos2_prefix, name),
+                'specfile=mos{}-obj-{}.pi'.format(self.mos2_prefix, name)]
+
+        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.environ, stdout=subprocess.PIPE)
+        out = proc.communicate()[0].decode("utf-8").splitlines()
+        self.mos2_area = [out[i] for i in range(len(out)) if "Area" in out[i]][0].split()[1]
+
+        output = "MOS2 Area: {}".format(self.mos2_area)
+        print(output)
+        return output
+
+    def proton_scale_pn(self, inner_radius, outer_radius):
+        name = "{}-{}".format(inner_radius, outer_radius)
+
+        args = ['proton_scale',
+                'caldb={}'.format(self.envvars['esas_caldb']),
+                'mode=1',
+                'detector=3',
+                'maskfile=pn{}-sp-{}.fits'.format(self.pn_prefix, name),
+                'specfile=pn{}-obj-{}.pi'.format(self.pn_prefix, name)]
+
+        proc = subprocess.Popen(args, cwd=self.folder_list["epic"], env=self.environ, stdout=subprocess.PIPE)
+        out = proc.communicate()[0].decode("utf-8").splitlines()
+        self.pn_area = [out[i] for i in range(len(out)) if "Area" in out[i]][0].split()[1]
+
+        output = "PN Area: {}".format(self.pn_area)
+        print(output)
+        return output
+
 
 class Threads:
     @staticmethod
@@ -315,8 +630,57 @@ class Threads:
 
     @staticmethod
     def create_region_file(obs, inner_radius, outer_radius):
-        obs.create_region_file(inner_radius, outer_radius)
+        mos1_region, mos2_region, pn_region = obs.create_region_file(inner_radius, outer_radius)
+        return mos1_region, mos2_region, pn_region
 
     @staticmethod
     def mos1_spectra(obs, region_file='reg.txt', mask=0, with_image=False, elow=400, ehigh=7200):
         obs.mos1_spectra(region_file, mask, with_image, elow, ehigh)
+
+    @staticmethod
+    def mos2_spectra(obs, region_file='reg.txt', mask=0, with_image=False, elow=400, ehigh=7200):
+        obs.mos2_spectra(region_file, mask, with_image, elow, ehigh)
+
+    @staticmethod
+    def pn_spectra(obs, region_file='reg.txt', mask=0, with_image=False, elow=400, ehigh=7200):
+        obs.pn_spectra(region_file, mask, with_image, elow, ehigh)
+
+    @staticmethod
+    def rename_mos1_spectra_output(obs, inner_radius, outer_radius):
+        obs.rename_mos1_spectra_output(inner_radius, outer_radius)
+
+    @staticmethod
+    def rename_mos2_spectra_output(obs, inner_radius, outer_radius):
+        obs.rename_mos2_spectra_output(inner_radius, outer_radius)
+
+    @staticmethod
+    def rename_pn_spectra_output(obs, inner_radius, outer_radius):
+        obs.rename_pn_spectra_output(inner_radius, outer_radius)
+
+    @staticmethod
+    def grppha_mos1(obs, inner_radius, outer_radius, bin_value=20):
+        obs.grppha_mos1(inner_radius, outer_radius, bin_value)
+
+    @staticmethod
+    def grppha_mos2(obs, inner_radius, outer_radius, bin_value=20):
+        obs.grppha_mos2(inner_radius, outer_radius, bin_value)
+
+    @staticmethod
+    def grppha_pn(obs, inner_radius, outer_radius, bin_value=20):
+        obs.grppha_pn(inner_radius, outer_radius, bin_value)
+
+    @staticmethod
+    def proton_scale_mos1(obs, inner_radius, outer_radius):
+        output = obs.proton_scale_mos1(inner_radius, outer_radius)
+        return output
+
+    @staticmethod
+    def proton_scale_mos2(obs, inner_radius, outer_radius):
+        output = obs.proton_scale_mos2(inner_radius, outer_radius)
+        return output
+
+    @staticmethod
+    def proton_scale_pn(obs, inner_radius, outer_radius):
+        output = obs.proton_scale_pn(inner_radius, outer_radius)
+        return output
+

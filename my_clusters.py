@@ -45,10 +45,29 @@ Threads.cheese(A1589_obs, scale=0.5, rate=1.0, dist=40, clobber=False)
 Threads.set_detx_dety(A1589_obs, A1589_info)
 
 # create region file
-inner_radius, outer_radius = 0, 30
-Threads.create_region_file(A1589_obs, inner_radius, outer_radius)
+inner_radius, outer_radius = 0, 5
+mos1_region, mos2_region, pn_region = Threads.create_region_file(A1589_obs, inner_radius, outer_radius)
+#mos1_region = "reg1-{}-{}.txt".format(inner_radius, outer_radius)
+#mos2_region = "reg2-{}-{}.txt".format(inner_radius, outer_radius)
+#pn_region = "reg3-{}-{}.txt".format(inner_radius, outer_radius)
 
 # mos1 spectrum
-inner_radius, outer_radius = 0, 30
-mos1_region = "reg1-{}-{}.txt".format(inner_radius, outer_radius)
-Threads.mos1_spectra(A1589_obs, region_file=mos1_region, mask=1)
+#Threads.mos1_spectra(A1589_obs, region_file=mos1_region, mask=0)
+#Threads.mos2_spectra(A1589_obs, region_file=mos2_region, mask=0)
+#Threads.pn_spectra(A1589_obs, region_file=pn_region, mask=0)
+
+# rename spectrum
+Threads.rename_mos1_spectra_output(A1589_obs, inner_radius, outer_radius)
+Threads.rename_mos2_spectra_output(A1589_obs, inner_radius, outer_radius)
+Threads.rename_pn_spectra_output(A1589_obs, inner_radius, outer_radius)
+
+# group spectrum
+bin_value = 50
+Threads.grppha_mos1(A1589_obs, inner_radius, outer_radius, bin_value=bin_value)
+Threads.grppha_mos2(A1589_obs, inner_radius, outer_radius, bin_value=bin_value)
+Threads.grppha_pn(A1589_obs, inner_radius, outer_radius, bin_value=bin_value)
+
+# proton scale
+mos1_area = Threads.proton_scale_mos1(A1589_obs, inner_radius, outer_radius)
+mos2_area = Threads.proton_scale_mos2(A1589_obs, inner_radius, outer_radius)
+pn_area = Threads.proton_scale_pn(A1589_obs, inner_radius, outer_radius)
