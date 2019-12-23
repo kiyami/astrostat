@@ -385,7 +385,7 @@ class Observation:
                                clobber=True)
 
         args = ['pn_back',
-                'prefix={}'.format(self.mos1_prefix),
+                'prefix={}'.format(self.pn_prefix),
                 'caldb={}'.format(self.environ['esas_caldb']),
                 'diag=0',
                 'elow={}'.format(elow), 'ehigh={}'.format(ehigh),
@@ -582,7 +582,7 @@ class Observation:
         name = "{}-{}".format(inner_radius, outer_radius)
 
         args = ['proton_scale',
-                'caldb={}'.format(self.envvars['esas_caldb']),
+                'caldb={}'.format(self.environ['esas_caldb']),
                 'mode=1',
                 'detector=3',
                 'maskfile=pn{}-sp-{}.fits'.format(self.pn_prefix, name),
