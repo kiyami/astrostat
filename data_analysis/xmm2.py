@@ -200,6 +200,8 @@ class Observation:
                                                                                                            inner_radius_phy)
         mos1_file_name = "reg1-{}-{}.txt".format(int(inner_radius), int(outer_radius))
 
+        mos1_region = Region(name=mos1_file_name, inner_radius=inner_radius, outer_radius=outer_radius, camera='mos1')
+
         with open(os.path.join(self.folder_list["regions"], mos1_file_name), "w") as f:
             f.write(mos1_text)
 
@@ -208,6 +210,8 @@ class Observation:
                                                                                                            outer_radius_phy,
                                                                                                            inner_radius_phy)
         mos2_file_name = "reg2-{}-{}.txt".format(int(inner_radius), int(outer_radius))
+
+        mos2_region = Region(name=mos2_file_name, inner_radius=inner_radius, outer_radius=outer_radius, camera='mos2')
 
         with open(os.path.join(self.folder_list["regions"], mos2_file_name), "w") as f:
             f.write(mos2_text)
@@ -218,10 +222,13 @@ class Observation:
                                                                                                          inner_radius_phy)
         pn_file_name = "reg3-{}-{}.txt".format(int(inner_radius), int(outer_radius))
 
+        pn_region = Region(name=pn_file_name, inner_radius=inner_radius, outer_radius=outer_radius, camera='pn')
+
         with open(os.path.join(self.folder_list["regions"], pn_file_name), "w") as f:
             f.write(pn_text)
 
-        return mos1_file_name, mos2_file_name, pn_file_name
+        #return mos1_file_name, mos2_file_name, pn_file_name
+        return mos1_region, mos2_region, pn_region
 
     def mos1_spectra(self, region_file='reg.txt', mask=0, with_image=False, elow=400, ehigh=7200):
 
@@ -596,6 +603,33 @@ class Observation:
         print(output)
         return output
 
+class Region:
+    camera_prefixes = {'mos1': 'reg1',
+                       'mos2': 'reg2',
+                       'pn': 'reg3'}
+
+    def __init__(self, name='', inner_radius=0, outer_radius=0, camera=''):
+        name = str(name)
+        inner_radius = float(inner_radius)
+        outer_radius = float(outer_radius)
+        camera = str(camera)
+
+        if camera == '':
+            print("Invalid input values for Region class initialisation!")
+            sys.exit()
+
+        if name == '':
+            if (inner_radius == 0.0 and outer_radius == 0.0) or (inner_radius >= outer_radius):
+                print("Invalid input values for Region class initialisation!")
+                sys.exit()
+            else:
+                self.name = '{}-{}-{}.txt'.format(self.camera_prefixes[camera], int(inner_radius), int(outer_radius))
+        else:
+            self.name = name
+
+        self.inner_radius = inner_radius
+        self.outer_radius = outer_radius
+        self.camera = camera
 
 class Threads:
     @staticmethod
@@ -683,4 +717,3 @@ class Threads:
     def proton_scale_pn(obs, inner_radius, outer_radius):
         output = obs.proton_scale_pn(inner_radius, outer_radius)
         return output
-
